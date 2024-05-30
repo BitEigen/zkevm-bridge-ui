@@ -13,11 +13,13 @@ export interface CommonChain {
   name: string;
   nativeCurrency: {
     decimals: number;
+    logoUrl: string;
     name: string;
     symbol: string;
   };
   networkId: number;
   provider: JsonRpcProvider;
+  wrappedAddress: string;
 }
 
 export type EthereumChain = CommonChain & {

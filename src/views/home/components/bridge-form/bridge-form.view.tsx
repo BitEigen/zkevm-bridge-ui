@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { FC, useCallback, useEffect, useState } from "react";
 
 import { addCustomToken, getChainCustomTokens, removeCustomToken } from "src/adapters/storage";
@@ -127,10 +127,15 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
       if (isTokenEther(token)) {
         return chain.provider.getBalance(account);
       } else {
+        const selectedToken = selectTokenAddress(token, chain);
+        if (selectedToken == ethers.constants.AddressZero) {
+          return chain.provider.getBalance(account);
+        }
+
         return getErc20TokenBalance({
           accountAddress: account,
           chain: chain,
-          tokenAddress: selectTokenAddress(token, chain),
+          tokenAddress: token.address,
         });
       }
     },

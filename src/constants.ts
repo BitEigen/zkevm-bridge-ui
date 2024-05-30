@@ -84,15 +84,19 @@ export const getChains = ({
   ethereum: {
     bridgeContractAddress: string;
     explorerUrl: string;
+    logoUrl: string;
     poeContractAddress: string;
     rollupManagerAddress: string;
     rpcUrl: string;
+    wrappedAddress: string;
   };
   polygonZkEVM: {
     bridgeContractAddress: string;
     explorerUrl: string;
+    logoUrl: string;
     networkId: number;
     rpcUrl: string;
+    wrappedAddress: string;
   };
 }): Promise<[EthereumChain, ZkEVMChain]> => {
   const ethereumProvider = new StaticJsonRpcProvider(ethereum.rpcUrl);
@@ -116,13 +120,15 @@ export const getChains = ({
       name: getEthereumNetworkName(ethereumNetwork.chainId),
       nativeCurrency: {
         decimals: 18,
-        name: "Ether",
-        symbol: "ETH",
+        logoUrl: ethereum.logoUrl,
+        name: "BNB Token",
+        symbol: "BNB",
       },
       networkId: 0,
       poeContractAddress: ethereum.poeContractAddress,
       provider: ethereumProvider,
       rollupManagerAddress: ethereum.rollupManagerAddress,
+      wrappedAddress: ethereum.wrappedAddress,
     },
     {
       bridgeContractAddress: polygonZkEVM.bridgeContractAddress,
@@ -133,11 +139,13 @@ export const getChains = ({
       name: polygonZkEVMNetworkName,
       nativeCurrency: {
         decimals: 18,
-        name: "Ether",
-        symbol: "ETH",
+        logoUrl: polygonZkEVM.logoUrl,
+        name: "POL Token",
+        symbol: "POL",
       },
       networkId: polygonZkEVM.networkId,
       provider: polygonZkEVMProvider,
+      wrappedAddress: polygonZkEVM.wrappedAddress,
     },
   ]);
 };
@@ -146,10 +154,10 @@ export const getEtherToken = (chain: Chain): Token => {
   return {
     address: ethers.constants.AddressZero,
     chainId: chain.chainId,
-    decimals: 18,
-    logoURI: ETH_TOKEN_LOGO_URI,
-    name: "Ether",
-    symbol: "ETH",
+    decimals: chain.nativeCurrency.decimals || 18,
+    logoURI: chain.nativeCurrency.logoUrl || ETH_TOKEN_LOGO_URI,
+    name: chain.nativeCurrency.name || "Ether",
+    symbol: chain.nativeCurrency.symbol || "ETH",
   };
 };
 
