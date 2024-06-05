@@ -93,7 +93,9 @@ export const NetworkBox: FC = () => {
             <Typography type="body2">
               {env.chains[0].name} Smart Contract:{" "}
               <ExternalLink
-                href={`${ethereumChain.explorerUrl}/address/${ethereumChain.poeContractAddress}`}
+                href={`${ethereumChain.explorerUrl}/address/${
+                  ethereumChain.poeContractAddress ?? ""
+                }`}
               >
                 {ethereumChain.poeContractAddress}
               </ExternalLink>

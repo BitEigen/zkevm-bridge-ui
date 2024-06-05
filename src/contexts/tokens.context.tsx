@@ -311,25 +311,32 @@ const TokensProvider: FC<PropsWithChildren> = (props) => {
 
   // initialize tokens
   useEffect(() => {
-    if (env) {
-      const ethereumChain = env.chains[0];
-      getEthereumErc20Tokens()
-        .then((ethereumErc20Tokens) =>
-          Promise.all(
-            ethereumErc20Tokens
-              .filter((token) => token.chainId === ethereumChain.chainId)
-              .map((token) => addWrappedToken({ token }))
+    if (env && connectedProvider.status === "successful") {
+      const ethereumChain = env.chains.find(
+        (chain) => chain.chainId === connectedProvider.data.chainId
+      );
+      if (ethereumChain) {
+        getEthereumErc20Tokens()
+          .then((ethereumErc20Tokens) =>
+            Promise.all(
+              ethereumErc20Tokens
+                .filter((token) => token.chainId === ethereumChain.chainId)
+                .map((token) => addWrappedToken({ token }))
+            )
+              .then((chainTokens) => {
+                const tokens = [getEtherToken(ethereumChain), ...chainTokens];
+                cleanupCustomTokens(tokens);
+                setTokens(tokens);
+              })
+              .catch(notifyError)
           )
-            .then((chainTokens) => {
-              const tokens = [getEtherToken(ethereumChain), ...chainTokens];
-              cleanupCustomTokens(tokens);
-              setTokens(tokens);
-            })
-            .catch(notifyError)
-        )
-        .catch(notifyError);
+          .catch(notifyError);
+      }
+    } else {
+      cleanupCustomTokens([]);
+      setTokens([]);
     }
-  }, [env, addWrappedToken, notifyError]);
+  }, [env, addWrappedToken, notifyError, connectedProvider]);
 
   const value = useMemo(() => {
     return {

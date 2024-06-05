@@ -1,11 +1,9 @@
 import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
-
-import { ReactComponent as EthChainIcon } from "src/assets/icons/chains/ethereum.svg";
-import { ReactComponent as PolygonZkEVMChainIcon } from "src/assets/icons/chains/polygon-zkevm.svg";
-import { Chain, Currency, EthereumChain, ProviderError, Token, ZkEVMChain } from "src/domain";
-import { ProofOfEfficiency__factory } from "src/types/contracts/proof-of-efficiency";
-import { getEthereumNetworkName } from "src/utils/labels";
+import { z } from "zod";
+import { StrictSchema } from "./utils/type-safety";
+import chainList from "src/assets/chains.json";
+import { Chain, Currency, Token } from "src/domain";
 
 export const DAI_PERMIT_TYPEHASH =
   "0xea2aa0a1be11a07ed86d755c93467f4f82362b452371d1ba94d1715123511acb";
@@ -77,77 +75,46 @@ export const TOKEN_BLACKLIST = [
   "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9",
 ];
 
-export const getChains = ({
-  ethereum,
-  polygonZkEVM,
-}: {
-  ethereum: {
-    bridgeContractAddress: string;
-    explorerUrl: string;
-    logoUrl: string;
-    poeContractAddress: string;
-    rollupManagerAddress: string;
-    rpcUrl: string;
-    wrappedAddress: string;
-  };
-  polygonZkEVM: {
-    bridgeContractAddress: string;
-    explorerUrl: string;
-    logoUrl: string;
-    networkId: number;
-    rpcUrl: string;
-    wrappedAddress: string;
-  };
-}): Promise<[EthereumChain, ZkEVMChain]> => {
-  const ethereumProvider = new StaticJsonRpcProvider(ethereum.rpcUrl);
-  const polygonZkEVMProvider = new StaticJsonRpcProvider(polygonZkEVM.rpcUrl);
-  const poeContract = ProofOfEfficiency__factory.connect(
-    ethereum.poeContractAddress,
-    ethereumProvider
-  );
+type RawChain = Omit<Chain, "provider"> & {
+  rpcUrl: string;
+};
 
-  return Promise.all([
-    ethereumProvider.getNetwork().catch(() => Promise.reject(ProviderError.Ethereum)),
-    polygonZkEVMProvider.getNetwork().catch(() => Promise.reject(ProviderError.PolygonZkEVM)),
-    poeContract.networkName().catch(() => Promise.reject(ProviderError.Ethereum)),
-  ]).then(([ethereumNetwork, polygonZkEVMNetwork, polygonZkEVMNetworkName]) => [
-    {
-      bridgeContractAddress: ethereum.bridgeContractAddress,
-      chainId: ethereumNetwork.chainId,
-      explorerUrl: ethereum.explorerUrl,
-      Icon: EthChainIcon,
-      key: "ethereum",
-      name: getEthereumNetworkName(ethereumNetwork.chainId),
-      nativeCurrency: {
-        decimals: 18,
-        logoUrl: ethereum.logoUrl,
-        name: "BNB Token",
-        symbol: "BNB",
-      },
-      networkId: 0,
-      poeContractAddress: ethereum.poeContractAddress,
-      provider: ethereumProvider,
-      rollupManagerAddress: ethereum.rollupManagerAddress,
-      wrappedAddress: ethereum.wrappedAddress,
-    },
-    {
-      bridgeContractAddress: polygonZkEVM.bridgeContractAddress,
-      chainId: polygonZkEVMNetwork.chainId,
-      explorerUrl: polygonZkEVM.explorerUrl,
-      Icon: PolygonZkEVMChainIcon,
-      key: "polygon-zkevm",
-      name: polygonZkEVMNetworkName,
-      nativeCurrency: {
-        decimals: 18,
-        logoUrl: polygonZkEVM.logoUrl,
-        name: "POL Token",
-        symbol: "POL",
-      },
-      networkId: polygonZkEVM.networkId,
-      provider: polygonZkEVMProvider,
-      wrappedAddress: polygonZkEVM.wrappedAddress,
-    },
-  ]);
+export const chainParser = StrictSchema<RawChain>()(
+  z.object({
+    bridgeContractAddress: z.string(),
+    chainId: z.number(),
+    explorerUrl: z.string(),
+    icon: z.string(),
+    key: z.string(),
+    name: z.string(),
+    nativeCurrency: z.object({
+      decimals: z.number(),
+      logoUrl: z.string(),
+      name: z.string(),
+      symbol: z.string(),
+    }),
+    networkId: z.number(),
+    poeContractAddress: z.string().optional(),
+    rollupManagerAddress: z.string().optional(),
+    rpcUrl: z.string(),
+    wrappedAddress: z.string(),
+  })
+);
+
+export const getChains = async (): Promise<Chain[]> => {
+  const decodedChains = z.array(chainParser).safeParse(chainList);
+  return decodedChains.success
+    ? Promise.resolve(decodedChains.data)
+        .then((_chains) => {
+          return _chains.map((chainItem) => ({
+            ...chainItem,
+            provider: new StaticJsonRpcProvider(chainItem.rpcUrl),
+          }));
+        })
+        .catch(() => {
+          return [];
+        })
+    : [];
 };
 
 export const getEtherToken = (chain: Chain): Token => {

@@ -52,6 +52,7 @@ const ProvidersProvider: FC<PropsWithChildren> = (props) => {
   const [connectedProvider, setConnectedProvider] = useState<AsyncTask<ConnectedProvider, string>>({
     status: "pending",
   });
+
   // This is a hack to workaround this MetaMask issue:
   // https://github.com/MetaMask/metamask-extension/issues/13375
   const [isSwitchingNetwork, setIsSwitchingNetwork] = useState(false);

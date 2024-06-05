@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 
+import { Icon } from "../icon/icon.view";
 import { ReactComponent as CaretDown } from "src/assets/icons/caret-down.svg";
 import { useEnvContext } from "src/contexts/env.context";
 import { useErrorContext } from "src/contexts/error.context";
@@ -44,7 +45,7 @@ export const NetworkSelector: FC = () => {
         title={selectedChain.name}
         type="button"
       >
-        <selectedChain.Icon />
+        <Icon url={selectedChain.icon} />
         <Typography className={classes.networkButtonText} type="body1">
           {selectedChain.name}
         </Typography>

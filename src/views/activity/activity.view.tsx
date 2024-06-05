@@ -251,7 +251,7 @@ export const Activity: FC = () => {
     if (env) {
       const ethereum = env.chains[0];
       const rollupManagerContract = RollupManager__factory.connect(
-        ethereum.rollupManagerAddress,
+        ethereum.rollupManagerAddress ?? "",
         ethereum.provider
       );
       const refreshLastVerifiedBatch = () => {
@@ -262,7 +262,7 @@ export const Activity: FC = () => {
         );
         rollupManagerContract
           .getLastVerifiedBatch(
-            rollupManagerContract.rollupAddressToID(env.chains[0].poeContractAddress)
+            rollupManagerContract.rollupAddressToID(env.chains[0].poeContractAddress ?? "")
           )
           .then((newLastVerifiedBatch) => {
             setLastVerifiedBatch({

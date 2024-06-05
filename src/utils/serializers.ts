@@ -2,7 +2,7 @@ import { BigNumber, utils as ethersUtils } from "ethers";
 import { z } from "zod";
 
 import { tokenParser } from "src/adapters/tokens";
-import { Chain, ChainKey, Env, Token } from "src/domain";
+import { Chain, Env, Token } from "src/domain";
 import { StrictSchema } from "src/utils/type-safety";
 
 type SerializedBridgeId = string;
@@ -41,9 +41,9 @@ export type PendingTx = PendingDepositTx | PendingClaimTx;
 interface CommonSerializedPendingTx {
   amount: string;
   destinationAddress: string;
-  from: ChainKey;
+  from: string;
   timestamp: number;
-  to: ChainKey;
+  to: string;
   token: Token;
 }
 
@@ -66,8 +66,6 @@ const bridgeIdParser = StrictSchema<SerializedBridgeId, BridgeId>()(
   })
 );
 
-const chainKeyParser = z.union([z.literal("ethereum"), z.literal("polygon-zkevm")]);
-
 const pendingTxDepositParser = (env: Env) =>
   StrictSchema<SerializedPendingDepositTx, PendingDepositTx>()(
     z
@@ -75,9 +73,9 @@ const pendingTxDepositParser = (env: Env) =>
         amount: z.string(),
         depositTxHash: z.string(),
         destinationAddress: z.string(),
-        from: chainKeyParser,
+        from: z.string(),
         timestamp: z.number(),
-        to: chainKeyParser,
+        to: z.string(),
         token: tokenParser,
         type: z.literal("deposit"),
       })
@@ -123,9 +121,9 @@ const pendingTxClaimParser = (env: Env) =>
         claimTxHash: z.string(),
         depositTxHash: z.string(),
         destinationAddress: z.string(),
-        from: chainKeyParser,
+        from: z.string(),
         timestamp: z.number(),
-        to: chainKeyParser,
+        to: z.string(),
         token: tokenParser,
         type: z.literal("claim"),
       })

@@ -1,15 +1,12 @@
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { BigNumber } from "ethers";
-import { ComponentType } from "react";
 
-export type ChainKey = "ethereum" | "polygon-zkevm";
-
-export interface CommonChain {
-  Icon: ComponentType<{ className?: string }>;
+export interface Chain {
   bridgeContractAddress: string;
   chainId: number;
   explorerUrl: string;
-  key: ChainKey;
+  icon: string;
+  key: string;
   name: string;
   nativeCurrency: {
     decimals: number;
@@ -18,21 +15,11 @@ export interface CommonChain {
     symbol: string;
   };
   networkId: number;
+  poeContractAddress?: string;
   provider: JsonRpcProvider;
+  rollupManagerAddress?: string;
   wrappedAddress: string;
 }
-
-export type EthereumChain = CommonChain & {
-  key: "ethereum";
-  poeContractAddress: string;
-  rollupManagerAddress: string;
-};
-
-export type ZkEVMChain = CommonChain & {
-  key: "polygon-zkevm";
-};
-
-export type Chain = EthereumChain | ZkEVMChain;
 
 export interface ConnectedProvider {
   account: string;
@@ -70,7 +57,7 @@ export interface ReportFormEnvEnabled {
 
 export interface Env {
   bridgeApiUrl: string;
-  chains: [EthereumChain, ZkEVMChain];
+  chains: Chain[];
   fiatExchangeRates:
     | {
         areEnabled: false;

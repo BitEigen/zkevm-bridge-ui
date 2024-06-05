@@ -6,12 +6,13 @@ import { ReactComponent as ArrowDown } from "src/assets/icons/arrow-down.svg";
 import { ReactComponent as CaretDown } from "src/assets/icons/caret-down.svg";
 import { getEtherToken } from "src/constants";
 import { useEnvContext } from "src/contexts/env.context";
+import { useErrorContext } from "src/contexts/error.context";
 import { useProvidersContext } from "src/contexts/providers.context";
 import { useTokensContext } from "src/contexts/tokens.context";
 import { AsyncTask, Chain, FormData, Token } from "src/domain";
 import { useCallIfMounted } from "src/hooks/use-call-if-mounted";
 import { isTokenEther, selectTokenAddress } from "src/utils/tokens";
-import { isAsyncTaskDataAvailable } from "src/utils/types";
+import { isAsyncTaskDataAvailable, isMetaMaskUserRejectedRequestError } from "src/utils/types";
 import { AmountInput } from "src/views/home/components/amount-input/amount-input.view";
 import { useBridgeFormStyles } from "src/views/home/components/bridge-form/bridge-form.styles";
 import { TokenSelector } from "src/views/home/components/token-selector/token-selector.view";
@@ -41,7 +42,8 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
   const callIfMounted = useCallIfMounted();
   const env = useEnvContext();
   const { getErc20TokenBalance, tokens: defaultTokens } = useTokensContext();
-  const { connectedProvider } = useProvidersContext();
+  const { changeNetwork, connectedProvider } = useProvidersContext();
+  const { notifyError } = useErrorContext();
   const [balanceFrom, setBalanceFrom] = useState<AsyncTask<BigNumber, string>>({
     status: "pending",
   });
@@ -67,6 +69,13 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
         setSelectedChains({ from, to });
         setChains(undefined);
         setAmount(undefined);
+        changeNetwork(from).catch((error) => {
+          callIfMounted(() => {
+            if (isMetaMaskUserRejectedRequestError(error) === false) {
+              notifyError(error);
+            }
+          });
+        });
       }
     }
   };
@@ -285,7 +294,7 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
               onClick={() => setChains(env.chains)}
               type="button"
             >
-              <selectedChains.from.Icon />
+              <Icon url={selectedChains.from.icon} />
               <Typography type="body1">{selectedChains.from.name}</Typography>
               <CaretDown />
             </button>
@@ -325,7 +334,7 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
           <div className={classes.leftBox}>
             <Typography type="body2">To</Typography>
             <div className={classes.toChain}>
-              <selectedChains.to.Icon />
+              <Icon url={selectedChains.to.icon} />
               <Typography type="body1">{selectedChains.to.name}</Typography>
             </div>
           </div>

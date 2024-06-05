@@ -438,14 +438,14 @@ export const BridgeConfirmation: FC = () => {
         )}
         <div className={classes.chainsRow}>
           <div className={classes.chainBox}>
-            <from.Icon />
+            <Icon url={from.icon} />
             <Typography className={classes.chainName} type="body1">
               {from.name}
             </Typography>
           </div>
           <ArrowRightIcon className={classes.arrowIcon} />
           <div className={classes.chainBox}>
-            <to.Icon />
+            <Icon url={to.icon} />
             <Typography className={classes.chainName} type="body1">
               {to.name}
             </Typography>

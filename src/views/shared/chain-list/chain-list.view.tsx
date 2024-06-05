@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 
+import { Icon } from "../icon/icon.view";
 import { ReactComponent as XMarkIcon } from "src/assets/icons/xmark.svg";
 import { Chain } from "src/domain";
 import { Card } from "src/views/shared/card/card.view";
@@ -36,7 +37,7 @@ export const ChainList: FC<ChainListProps> = ({ chains, onClick, onClose }) => {
           <div className={classes.list}>
             {chains.map((chain) => (
               <button className={classes.button} key={chain.key} onClick={() => onClick(chain)}>
-                <chain.Icon className={classes.icon} />
+                <Icon url={chain.icon} />
                 <Typography type="body1">{chain.name}</Typography>
               </button>
             ))}

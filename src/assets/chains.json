@@ -1,0 +1,38 @@
+[
+  {
+    "bridgeContractAddress": "0xB34dda38a2aC41E79dE9343F56DD699b44025ce1",
+    "chainId": 97,
+    "explorerUrl": "https://testnet.bscscan.com",
+    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+    "key": "ethereum",
+    "name": "Ethereum",
+    "nativeCurrency": {
+      "decimals": 18,
+      "logoUrl": "https://bscscan.com/assets/bsc/images/svg/logos/chain-light.svg",
+      "name": "BNB Token",
+      "symbol": "BNB"
+    },
+    "networkId": 0,
+    "rpcUrl": "https://data-seed-prebsc-1-s1.binance.org:8545",
+    "rollupManagerAddress": "0xD484d04484D37280b3Dd303E8602f5dF5f7C854f",
+    "poeContractAddress": "0x8E8a5169f854d5c01dB578ad3AEfb95b7E5FbeD0",
+    "wrappedAddress": "0xc6f0f1E6846f9E55fE31FF5632d816Feab68466b"
+  },
+  {
+    "bridgeContractAddress": "0xB34dda38a2aC41E79dE9343F56DD699b44025ce1",
+    "chainId": 1011,
+    "explorerUrl": "https://explorer-1.biteigen.xyz",
+    "icon": "https://raw.githubusercontent.com/BitEigen/brand-kit/main/logo/in-product/BitEigen_Logo.svg",
+    "key": "polygon-zkevm",
+    "name": "BitEigen",
+    "nativeCurrency": {
+      "decimals": 18,
+      "logoUrl": "https://raw.githubusercontent.com/BitEigen/brand-kit/main/logo/in-product/BitEigen_Logo.svg",
+      "name": "POL Token",
+      "symbol": "POL"
+    },
+    "networkId": 1,
+    "rpcUrl": "https://rpc-1.biteigen.xyz",
+    "wrappedAddress": "0xE48021256F56bbF48822Ee3238DF5C9d621B54Cc"
+  }
+]

@@ -8,6 +8,7 @@ import { getShortenedEthereumAddress } from "src/utils/addresses";
 import { copyToClipboard } from "src/utils/browser";
 import { isTokenEther } from "src/utils/tokens";
 import { useTokenInfoTableStyles } from "src/views/home/components/token-info-table/token-info-table.styles";
+import { Icon } from "src/views/shared/icon/icon.view";
 import { Typography } from "src/views/shared/typography/typography.view";
 
 interface TokenInfoTableProps {
@@ -66,7 +67,7 @@ export const TokenInfoTable: FC<TokenInfoTableProps> = ({ className, token }) =>
     const ethereumRow = (
       <div className={classes.row}>
         <Typography className={classes.alignRow} type="body2">
-          <ethereum.Icon className={classes.chainIcon} />
+          <Icon className={classes.chainIcon} url={ethereum.icon} />
           L1 token address
         </Typography>
         <Typography className={classes.alignRow} type="body1">
@@ -81,7 +82,7 @@ export const TokenInfoTable: FC<TokenInfoTableProps> = ({ className, token }) =>
     const polygonZkEVMRow = (
       <div className={classes.row}>
         <Typography className={classes.alignRow} type="body2">
-          <polygonZkEVM.Icon className={classes.chainIcon} />
+          <Icon className={classes.chainIcon} url={polygonZkEVM.icon} />
           L2 token address
         </Typography>
         <Typography className={classes.alignRow} type="body1">
@@ -114,7 +115,7 @@ export const TokenInfoTable: FC<TokenInfoTableProps> = ({ className, token }) =>
     const nativeAddressRow = nativeTokenChain ? (
       <div className={classes.row}>
         <Typography className={classes.alignRow} type="body2">
-          <nativeTokenChain.Icon className={classes.chainIcon} />
+          <Icon className={classes.chainIcon} url={nativeTokenChain.icon} />
           {`${nativeTokenChain.key === "ethereum" ? "L1" : "L2"} token address`}
         </Typography>
         <div className={classes.rowRightBlock}>
@@ -145,7 +146,7 @@ export const TokenInfoTable: FC<TokenInfoTableProps> = ({ className, token }) =>
       wrappedTokenChain && wrappedTokenAddress ? (
         <div className={classes.row}>
           <Typography className={classes.alignRow} type="body2">
-            <wrappedTokenChain.Icon className={classes.chainIcon} />
+            <Icon className={classes.chainIcon} url={wrappedTokenChain.icon} />
             {`${wrappedTokenChain.key === "ethereum" ? "L1" : "L2"} token address`}
           </Typography>
           <div className={classes.rowRightBlock}>
