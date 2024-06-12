@@ -63,6 +63,7 @@ export const TokenInfoTable: FC<TokenInfoTableProps> = ({ className, token }) =>
 
     const l1Address =
       token.chainId == ethereum.chainId ? token.address : polygonZkEVM.wrappedAddress;
+    console.log("l1Address", l1Address);
 
     const ethereumRow = (
       <div className={classes.row}>
@@ -101,6 +102,8 @@ export const TokenInfoTable: FC<TokenInfoTableProps> = ({ className, token }) =>
       </div>
     );
   } else {
+    console.log("XXX");
+
     const nativeTokenChain = env.chains.find(({ chainId }) => chainId === token.chainId);
     const nativeTokenAddress = token.address;
 

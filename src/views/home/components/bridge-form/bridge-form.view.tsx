@@ -11,6 +11,7 @@ import { useProvidersContext } from "src/contexts/providers.context";
 import { useTokensContext } from "src/contexts/tokens.context";
 import { AsyncTask, Chain, FormData, Token } from "src/domain";
 import { useCallIfMounted } from "src/hooks/use-call-if-mounted";
+import { formatTokenAmount } from "src/utils/amounts";
 import { isTokenEther, selectTokenAddress } from "src/utils/tokens";
 import { isAsyncTaskDataAvailable, isMetaMaskUserRejectedRequestError } from "src/utils/types";
 import { AmountInput } from "src/views/home/components/amount-input/amount-input.view";
@@ -85,6 +86,8 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
   };
 
   const onSelectToken = (token: Token) => {
+    console.log("onSelectToken", token);
+
     setToken(token);
     setIsTokenListOpen(false);
     setAmount(undefined);
@@ -132,11 +135,17 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
   };
 
   const getTokenBalance = useCallback(
-    (token: Token, chain: Chain): Promise<BigNumber> => {
+    (token: Token, chain: Chain, a = ""): Promise<BigNumber> => {
       if (isTokenEther(token)) {
+        if (a) {
+          console.log("getTokenBalance", token, chain, "isTokenEther");
+        }
         return chain.provider.getBalance(account);
       } else {
         const selectedToken = selectTokenAddress(token, chain);
+        if (a) {
+          console.log("getTokenBalance", token, chain, "selectedToken", selectedToken);
+        }
         if (selectedToken == ethers.constants.AddressZero) {
           return chain.provider.getBalance(account);
         }
@@ -220,7 +229,7 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
 
   useEffect(() => {
     // Load the balance of the selected token in both networks
-    if (selectedChains && token) {
+    if (selectedChains && token && env) {
       setBalanceFrom({ status: "loading" });
       setBalanceTo({ status: "loading" });
 
@@ -235,9 +244,36 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
             setBalanceFrom({ error: "Couldn't retrieve token balance", status: "failed" });
           });
         });
-      getTokenBalance(token, selectedChains.to)
+      console.log("Token", token);
+
+      let wrappedAddress = "";
+      if (isTokenEther(token)) {
+        console.log("isTokenEther");
+
+        const ethereum = env.chains[0].key == "ethereum" ? env.chains[0] : env.chains[1];
+        wrappedAddress =
+          token.chainId == ethereum.chainId ? ethereum.wrappedAddress : token.address;
+      } else {
+        // eslint-disable-next-line no-type-assertion/no-type-assertion
+        console.log("token.wrappedToken", token.wrappedToken);
+
+        wrappedAddress = token.wrappedToken?.address ?? "";
+      }
+      console.log("wrappedAddress", wrappedAddress);
+
+      getTokenBalance(
+        {
+          address: wrappedAddress,
+          ...selectedChains.to.nativeCurrency,
+          chainId: selectedChains.to.chainId,
+          logoURI: selectedChains.to.nativeCurrency.logoUrl,
+        },
+        selectedChains.to
+      )
         .then((balance) =>
           callIfMounted(() => {
+            console.log("ZBT: ", formatTokenAmount(balance, getEtherToken(selectedChains.to)));
+
             setBalanceTo({ data: balance, status: "successful" });
           })
         )
@@ -247,7 +283,7 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
           });
         });
     }
-  }, [callIfMounted, getTokenBalance, selectedChains, token]);
+  }, [callIfMounted, getTokenBalance, selectedChains, token, env]);
 
   useEffect(() => {
     // Load the default values after the network is changed
@@ -274,6 +310,9 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
       onResetForm();
     }
   }, [formData, onResetForm]);
+  useEffect(() => {
+    console.log("selectedChains To", selectedChains?.to);
+  }, [selectedChains?.to]);
 
   if (!env || !selectedChains || !tokens || !token) {
     return (
