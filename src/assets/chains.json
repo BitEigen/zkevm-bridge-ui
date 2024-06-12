@@ -3,9 +3,9 @@
     "bridgeContractAddress": "0xB34dda38a2aC41E79dE9343F56DD699b44025ce1",
     "chainId": 97,
     "explorerUrl": "https://testnet.bscscan.com",
-    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
     "key": "ethereum",
-    "name": "Ethereum",
+    "name": "Binance Smart Chain",
     "nativeCurrency": {
       "decimals": 18,
       "logoUrl": "https://bscscan.com/assets/bsc/images/svg/logos/chain-light.svg",

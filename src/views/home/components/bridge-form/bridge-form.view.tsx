@@ -135,27 +135,19 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
   };
 
   const getTokenBalance = useCallback(
-    (token: Token, chain: Chain, a = ""): Promise<BigNumber> => {
-      if (isTokenEther(token)) {
-        if (a) {
-          console.log("getTokenBalance", token, chain, "isTokenEther");
-        }
-        return chain.provider.getBalance(account);
-      } else {
-        const selectedToken = selectTokenAddress(token, chain);
-        if (a) {
-          console.log("getTokenBalance", token, chain, "selectedToken", selectedToken);
-        }
-        if (selectedToken == ethers.constants.AddressZero) {
-          return chain.provider.getBalance(account);
-        }
+    (token: Token, chain: Chain): Promise<BigNumber> => {
+      const handleAddress =
+        token.chainId == chain.chainId ? token.address : token.wrappedToken?.address;
 
-        return getErc20TokenBalance({
-          accountAddress: account,
-          chain: chain,
-          tokenAddress: token.address,
-        });
+      if (handleAddress == ethers.constants.AddressZero) {
+        return chain.provider.getBalance(account);
       }
+
+      return getErc20TokenBalance({
+        accountAddress: account,
+        chain: chain,
+        tokenAddress: handleAddress,
+      });
     },
     [account, getErc20TokenBalance]
   );
@@ -244,32 +236,8 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
             setBalanceFrom({ error: "Couldn't retrieve token balance", status: "failed" });
           });
         });
-      console.log("Token", token);
 
-      let wrappedAddress = "";
-      if (isTokenEther(token)) {
-        console.log("isTokenEther");
-
-        const ethereum = env.chains[0].key == "ethereum" ? env.chains[0] : env.chains[1];
-        wrappedAddress =
-          token.chainId == ethereum.chainId ? ethereum.wrappedAddress : token.address;
-      } else {
-        // eslint-disable-next-line no-type-assertion/no-type-assertion
-        console.log("token.wrappedToken", token.wrappedToken);
-
-        wrappedAddress = token.wrappedToken?.address ?? "";
-      }
-      console.log("wrappedAddress", wrappedAddress);
-
-      getTokenBalance(
-        {
-          address: wrappedAddress,
-          ...selectedChains.to.nativeCurrency,
-          chainId: selectedChains.to.chainId,
-          logoURI: selectedChains.to.nativeCurrency.logoUrl,
-        },
-        selectedChains.to
-      )
+      getTokenBalance(token, selectedChains.to)
         .then((balance) =>
           callIfMounted(() => {
             console.log("ZBT: ", formatTokenAmount(balance, getEtherToken(selectedChains.to)));

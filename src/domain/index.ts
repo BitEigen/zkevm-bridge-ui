@@ -37,7 +37,7 @@ export interface Token {
   symbol: string;
   wrappedToken?: {
     address: string;
-    chainId: number;
+    chainId?: number;
   };
 }
 

@@ -125,6 +125,9 @@ export const getEtherToken = (chain: Chain): Token => {
     logoURI: chain.nativeCurrency.logoUrl || ETH_TOKEN_LOGO_URI,
     name: chain.nativeCurrency.name || "Ether",
     symbol: chain.nativeCurrency.symbol || "ETH",
+    wrappedToken: {
+      address: chain.wrappedAddress,
+    },
   };
 };
 
