@@ -11,8 +11,6 @@ import { useProvidersContext } from "src/contexts/providers.context";
 import { useTokensContext } from "src/contexts/tokens.context";
 import { AsyncTask, Chain, FormData, Token } from "src/domain";
 import { useCallIfMounted } from "src/hooks/use-call-if-mounted";
-import { formatTokenAmount } from "src/utils/amounts";
-import { isTokenEther, selectTokenAddress } from "src/utils/tokens";
 import { isAsyncTaskDataAvailable, isMetaMaskUserRejectedRequestError } from "src/utils/types";
 import { AmountInput } from "src/views/home/components/amount-input/amount-input.view";
 import { useBridgeFormStyles } from "src/views/home/components/bridge-form/bridge-form.styles";
@@ -86,8 +84,6 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
   };
 
   const onSelectToken = (token: Token) => {
-    console.log("onSelectToken", token);
-
     setToken(token);
     setIsTokenListOpen(false);
     setAmount(undefined);
@@ -146,7 +142,7 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
       return getErc20TokenBalance({
         accountAddress: account,
         chain: chain,
-        tokenAddress: handleAddress,
+        tokenAddress: handleAddress || "",
       });
     },
     [account, getErc20TokenBalance]
@@ -240,8 +236,6 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
       getTokenBalance(token, selectedChains.to)
         .then((balance) =>
           callIfMounted(() => {
-            console.log("ZBT: ", formatTokenAmount(balance, getEtherToken(selectedChains.to)));
-
             setBalanceTo({ data: balance, status: "successful" });
           })
         )
@@ -278,9 +272,6 @@ export const BridgeForm: FC<BridgeFormProps> = ({ account, formData, onResetForm
       onResetForm();
     }
   }, [formData, onResetForm]);
-  useEffect(() => {
-    console.log("selectedChains To", selectedChains?.to);
-  }, [selectedChains?.to]);
 
   if (!env || !selectedChains || !tokens || !token) {
     return (

@@ -22,7 +22,7 @@ export const tokenParser = StrictSchema<Omit<Token, "balance">>()(
     wrappedToken: z
       .object({
         address: z.string(),
-        chainId: z.number(),
+        chainId: z.number().optional(),
       })
       .optional(),
   })
