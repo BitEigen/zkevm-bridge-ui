@@ -1,0 +1,1 @@
+sudo rm -r /var/www/biteigen-bridge && sudo cp -r /home/polrare/biteigen/zkevm-bridge-ui/dist /var/www/biteigen-bridge && sudo chown www-data:www-data -R /var/www/biteigen-bridge
