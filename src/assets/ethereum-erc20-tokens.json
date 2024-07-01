@@ -1,20 +1,20 @@
 [
     {
         "name": "Pol Token",
-        "address": "0x746efa898c48383bd19513b559dFD1917C3038da",
+        "address": "0x9CB0Dc77f863DfCcCC9C2D29945D05Af51fC295C",
         "chainId": 31,
         "symbol": "POL",
         "decimals": 18,
         "logoURI": "https://raw.githubusercontent.com/BitEigen/brand-kit/main/logo/in-product/BitEigen_Logo.svg",
         "wrappedToken": {
             "address": "0x0000000000000000000000000000000000000000",
-            "chainId": 1012
+            "chainId": 1022
         }
     },
     {
         "name": "Wrapped Ether",
-        "address": "0xB07FD1Dfbf55FB7c59018171b901D32f96801B31",
-        "chainId": 1012,
+        "address": "0xe3d8a5D42397c9f1b44F3985b16BB1c0644F3E33",
+        "chainId": 1022,
         "symbol": "WETH",
         "decimals": 18,
         "logoURI": "https://explorer.testnet.rootstock.io/assets/btc-orange.3ea0272f.svg",

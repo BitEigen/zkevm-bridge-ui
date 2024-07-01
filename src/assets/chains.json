@@ -1,6 +1,6 @@
 [
   {
-    "bridgeContractAddress": "0x4F49866d47A086DdD7E54C8dE358Ef964a811794",
+    "bridgeContractAddress": "0xd847f89847deb7Fdce37e3EE211031289E4E5a47",
     "chainId": 31,
     "explorerUrl": "https://rootstock-testnet.blockscout.com",
     "icon": "https://strapi.mewapi.io/uploads/rootstock_large_d72adf1512_ee19a03096.png",
@@ -14,13 +14,13 @@
     },
     "networkId": 0,
     "rpcUrl": "https://public-node.testnet.rsk.co",
-    "rollupManagerAddress": "0xe3F11720a6c8e8c2ad1342DeD798e18319278341",
-    "poeContractAddress": "0x8ffe6c5aBf7D3C0DE3b9f0CC91bD8DC97d65Ba92",
-    "wrappedAddress": "0xB07FD1Dfbf55FB7c59018171b901D32f96801B31"
+    "rollupManagerAddress": "0xD05dCad68c42c6545a353fa5aA31368bA0af1e8E",
+    "poeContractAddress": "0xB60f2D860911928EA0c0c2b68A3625E34d9267a7",
+    "wrappedAddress": "0xe3d8a5D42397c9f1b44F3985b16BB1c0644F3E33"
   },
   {
-    "bridgeContractAddress": "0x6EfC2966a722218eb8D397d0Ca6a2AB20C3915Cd",
-    "chainId": 1012,
+    "bridgeContractAddress": "0xd847f89847deb7Fdce37e3EE211031289E4E5a47",
+    "chainId": 1022,
     "explorerUrl": "https://explorer-testnet.biteigen.xyz",
     "icon": "https://raw.githubusercontent.com/BitEigen/brand-kit/main/logo/in-product/BitEigen_Logo.svg",
     "key": "polygon-zkevm",
@@ -33,6 +33,6 @@
     },
     "networkId": 1,
     "rpcUrl": "https://rpc-testnet.biteigen.xyz",
-    "wrappedAddress": "0x746efa898c48383bd19513b559dFD1917C3038da"
+    "wrappedAddress": "0x9CB0Dc77f863DfCcCC9C2D29945D05Af51fC295C"
   }
 ]
